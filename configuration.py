@@ -14,11 +14,11 @@ class TCNNConfig(object):
 
     hidden_dim = 128        # 全连接层神经元
 
-    dropout_keep_prob = 0.8 # dropout保留比例
+    dropout = 0.8 # dropout保留比例
     learning_rate = 1e-3    # 学习率
 
-    batch_size = 128         # 每批训练大小
-    num_epochs = 10          # 总迭代轮次
+    batch_size = 256         # 每批训练大小
+    num_epochs = 1         # 总迭代轮次
 
 
 class TRNNConfig(object):

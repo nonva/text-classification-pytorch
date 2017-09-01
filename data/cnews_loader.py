@@ -65,14 +65,17 @@ def _file_to_ids(filename, word_to_id, max_length=600):
     data_id = []
     label_id = []
     for i in range(len(contents)):
-        data_id.append([word_to_id[x] for x in contents[i] if x in word_to_id])
+        cur_content = [word_to_id[x] for x in contents[i] if x in word_to_id]
+        if len(cur_content) < max_length:
+            cur_content = [0] * (max_length - len(cur_content)) + cur_content
+        data_id.append(cur_content[:max_length])
         label_id.append(cat_to_id[labels[i]])
 
     # 使用keras提供的pad_sequences来将文本pad为固定长度
-    x_pad = kr.preprocessing.sequence.pad_sequences(data_id, max_length)
-    y_pad = kr.utils.to_categorical(label_id)  # 将标签转换为one-hot表示
+    # x_pad = kr.preprocessing.sequence.pad_sequences(data_id, max_length)
+    #y_pad = kr.utils.to_categorical(label_id)  # 将标签转换为one-hot表示
 
-    return x_pad, y_pad
+    return data_id, label_id
 
 def preocess_file(data_path='data/cnews/', seq_length=600):
     """一次性返回所有数据"""
@@ -85,7 +88,7 @@ def preocess_file(data_path='data/cnews/', seq_length=600):
     x_val, y_val = _file_to_ids(os.path.join(data_path,
         'cnews.val.txt'), word_to_id, seq_length)
 
-    return x_train, y_train, x_test, y_test, x_val, y_val, words
+    return (x_train, y_train), (x_test, y_test), (x_val, y_val), words
 
 def batch_iter(data, batch_size=64, num_epochs=5):
     """生成批次数据"""
@@ -99,21 +102,25 @@ def batch_iter(data, batch_size=64, num_epochs=5):
         for batch_num in range(num_batchs_per_epoch):
             start_index = batch_num * batch_size
             end_index = min((batch_num + 1) * batch_size, data_size)
-            yield shuffled_data[start_index:end_index]
+            batch_data = shuffled_data[start_index:end_index]
+            yield map(list, zip(*batch_data))
 
 
 if __name__ == '__main__':
     if not os.path.exists('data/cnews/vocab_cnews.txt'):
         _build_vocab('data/cnews/cnews.train.txt')
-    x_train, y_train, x_test, y_test, x_val, y_val, words = preocess_file()
-    batch_train = batch_iter(list(zip(x_train, y_train)),
-        2, 10)
+    train_data, test_data, val_data, words = preocess_file()
+
+
+    batch_train = batch_iter(list(zip(train_data[0], train_data[1])), 2, 10)
+
+
     for batch in batch_train:
-        x_batch, y_batch = zip(*batch)
-        print(np.array(x_batch))
-        print(np.array(x_batch).shape)
-        print(np.array(y_batch))
-        print(np.array(y_batch).shape)
+        x_batch, y_batch = batch
+        print(x_batch)
+        print(y_batch)
+        print(len(x_batch[0]))
+        print(type(y_batch))
         break
 #     print(x_train.shape, y_train.shape)
 #     print(x_test.shape, y_test.shape)
