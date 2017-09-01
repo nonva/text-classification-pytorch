@@ -18,7 +18,7 @@ class TCNNConfig(object):
     learning_rate = 1e-3    # 学习率
 
     batch_size = 256         # 每批训练大小
-    num_epochs = 1         # 总迭代轮次
+    num_epochs = 10         # 总迭代轮次
 
 
 class TRNNConfig(object):

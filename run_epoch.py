@@ -41,8 +41,8 @@ def train(model, learning_rate, batch_train, val_data):
         optimizer.step()
 
         running_loss += loss.data[0]
-        if i % 10 == 9:
-            avg_loss = running_loss / 10
+        if i % 100 == 99:
+            avg_loss = running_loss / 100
             running_loss = 0.0
 
             pred_train = torch.max(outputs.data, 1)[1]
