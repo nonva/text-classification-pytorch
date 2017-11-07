@@ -4,7 +4,7 @@ import torch.optim as optim
 import torch.nn.functional as F
 from torch.utils.data import DataLoader
 from torch.autograd import Variable
-from cnn_model import TCNNConfig, TextCNN
+from rnn_model import TRNNConfig, TextRNN
 from data.data_loader import Dictionary, TextDataset, build_vocab
 import numpy as np
 from sklearn import metrics
@@ -26,7 +26,7 @@ class_dir = os.path.join(base_dir, 'cnews.classes.txt')
 save_path = 'models'  # model save path
 if not os.path.exists(save_path):
     os.mkdir(save_path)
-model_file = os.path.join(save_path, 'textcnn.pt')
+model_file = os.path.join(save_path, 'textrnn.pt')
 
 
 def get_time_dif(start_time):
@@ -54,7 +54,8 @@ def evaluate(data):
         if use_cuda:
             inputs, targets = inputs.cuda(), targets.cuda()
 
-        outputs = model(inputs)
+        hidden = model.init_hidden(len(x_batch))
+        outputs = model(inputs, hidden)
         loss = F.cross_entropy(outputs, targets, size_average=False)
         total_loss += loss.data[0]
 
@@ -98,7 +99,8 @@ def train():
                 inputs, targets = inputs.cuda(), targets.cuda()
 
             optimizer.zero_grad()
-            outputs = model(inputs)  # forward computation
+            hidden = model.init_hidden(len(x_batch))
+            outputs = model(inputs, hidden)  # forward computation
             loss = criterion(outputs, targets)
 
             if total_batch % config.print_per_batch == 0:
@@ -163,18 +165,18 @@ def test():
 
 if __name__ == '__main__':
     if len(sys.argv) != 2 or sys.argv[1] not in ['train', 'test']:
-        print("""Usage: python run_cnn.py [train / test]""")
+        print("""Usage: python run_rnn.py [train / test]""")
         exit(1)
 
-    print('Configuring CNN model...')
-    config = TCNNConfig()
+    print('Configuring RNN model...')
+    config = TRNNConfig()
     if not os.path.exists(vocab_dir):
         build_vocab(train_dir, vocab_dir, config.vocab_size)
 
     dictionary = Dictionary(vocab_dir, class_dir)
     config.vocab_size = len(dictionary)
 
-    model = TextCNN(config)
+    model = TextRNN(config)
     print(model)
 
     if use_cuda:

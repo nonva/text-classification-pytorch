@@ -4,6 +4,11 @@ cnn and rnn for chinese text classification using pytorch
 
 ### CNN
 
+#### Training
+
+
+#### Testing
+
 ```
 Configuring CNN model...
 TextCNN (

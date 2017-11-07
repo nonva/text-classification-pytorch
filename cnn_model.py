@@ -7,12 +7,14 @@ import torch.nn.functional as F
 
 
 class TCNNConfig(object):
-    """CNN Parameters"""
+    """
+    CNN Parameters
+    """
     embedding_dim = 64      # embedding vector size
-    seq_length = 200        # maximum length of sequence
-    vocab_size = 50000      # most common words
+    seq_length = 600        # maximum length of sequence
+    vocab_size = 5000      # most common words
 
-    num_filters = 64        # number of convolution filters
+    num_filters = 256        # number of convolution filters
     kernel_size = 5         # kernel size
 
     hidden_dim = 128        # hidden size of fully connected layer
@@ -28,6 +30,9 @@ class TCNNConfig(object):
 
 
 class TextCNN(nn.Module):
+    """
+    CNN model for text classification.
+    """
     def __init__(self, config):
         super(TextCNN, self).__init__()
 
@@ -45,7 +50,6 @@ class TextCNN(nn.Module):
         conv1d = self.conv(embedded).permute(0, 2, 1)         # permute bach to (batch, seq_len, channels)
         gmp_1d = conv1d.max(1)[0]                             # global max pooling
 
-        x = F.dropout(gmp_1d, p=self.dropout_p)               # dropout, disabled when evaluating
-        x = F.relu(self.fc1(x))                               # add a relu layer to the first fully connected layer
-        x = self.fc2(x)                                       # last fully connected layer
+        x = F.dropout(self.fc1(gmp_1d), p=self.dropout_p)     # dropout, disabled when evaluating
+        x = self.fc2(F.relu(x))                               # last fully connected layer
         return x
