@@ -1,6 +1,17 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
+"""
+CNN for Sentence Classification: https://arxiv.org/pdf/1408.5882.pdf
+
+To use this, run `python mr_cnn.py`
+
+The best result could reach 76%.
+
+"""
+
+__author__ = 'gaussic'
+
 import os
 import time
 from datetime import timedelta
@@ -35,7 +46,7 @@ class TCNNConfig(object):
     seq_length = 50  # maximum length of sequence
     vocab_size = 8000  # most common words
 
-    num_filters = 128     # number of the convolution filters
+    num_filters = 128  # number of the convolution filters
 
     hidden_dim = 128  # hidden size of fully connected layer
 
@@ -53,6 +64,7 @@ class TextCNN(nn.Module):
     """
     CNN model for text classification.
     """
+
     def __init__(self, config):
         super(TextCNN, self).__init__()
 
@@ -64,18 +76,22 @@ class TextCNN(nn.Module):
 
         self.embedding = nn.Embedding(V, E)  # embedding layer
 
-        self.conv13 = nn.Conv1d(E, Nf, 3)  # conv1d layer
+        # three convolution layers
+        self.conv13 = nn.Conv1d(E, Nf, 3)
         self.conv14 = nn.Conv1d(E, Nf, 4)
         self.conv15 = nn.Conv1d(E, Nf, 5)
 
-        self.fc1 = nn.Linear(3 * Nf, C)   # fully connected layer
+        self.fc1 = nn.Linear(3 * Nf, C)  # fully connected layer
         self.dropout = nn.Dropout(drop)
 
-    def conv_and_max_pool(self, x, conv):
+    @staticmethod
+    def conv_and_max_pool(x, conv):
+        """Convolution and max pooling layer"""
         return F.relu(conv(x).permute(0, 2, 1).max(1)[0])
 
     def forward(self, inputs):
-        embedded = self.embedding(inputs).permute(0, 2, 1)    # conv1d takes in (batch, channels, seq_len)
+        # conv1d takes in (batch, channels, seq_len), but raw embedded is (batch, seq_len, channels)
+        embedded = self.embedding(inputs).permute(0, 2, 1)
 
         # convolution and global max pooling
         x1 = self.conv_and_max_pool(embedded, self.conv13)
@@ -83,8 +99,8 @@ class TextCNN(nn.Module):
         x3 = self.conv_and_max_pool(embedded, self.conv15)
 
         x = torch.cat((x1, x2, x3), 1)  # concatenation
-        x = self.dropout(x) # dropout, disabled when evaluating
-        x = self.fc1(x)                               # last fully connected layer
+        x = self.dropout(x)  # dropout, disabled when evaluating
+        x = self.fc1(x)  # last fully connected layer
         return x
 
 
@@ -101,7 +117,7 @@ def evaluate(model, data):
     """
     Evaluation on a given data.
     """
-    model.eval()  # set mode to evaluation
+    model.eval()  # set mode to evaluation to disable dropout
     data_loader = DataLoader(data, batch_size=256)
 
     data_len = len(data)
@@ -205,13 +221,12 @@ def train():
 def test(model, test_data):
     """
     Test the model on test dataset.
-    Note: do not run it seperately, unless you seperate the training and test data before training.
     """
     start_time = time.time()
     model.load_state_dict(torch.load(model_file))
 
     print("Testing...")
-    loss_test, acc_test, total_pred = evaluate(model, test_data)  # evaluate on test data
+    loss_test, acc_test, total_pred = evaluate(model, test_data)
     print('Test Loss: {0:>6.2}, Test Acc: {1:>7.2%}'.format(loss_test, acc_test))
 
     print("Precision, Recall and F1-Score...")
