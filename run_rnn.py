@@ -60,7 +60,7 @@ def evaluate(data):
         total_loss += loss.data[0]
 
         _, pred = torch.max(outputs.data, 1)
-        total_pred.extend(pred.numpy().tolist())
+        total_pred.extend(pred.cpu().numpy().tolist())
 
         total_acc += (pred == targets.data).sum()
 

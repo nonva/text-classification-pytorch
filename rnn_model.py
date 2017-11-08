@@ -21,7 +21,7 @@ class TRNNConfig(object):
 
     dropout_prob = 0.2  # how much probability to be dropped
     learning_rate = 1e-3  # learning rate
-    batch_size = 128  # batch size for training
+    batch_size = 64  # batch size for training
     num_epochs = 10  # total number of epochs
 
     print_per_batch = 100  # print out the intermediate status every n batches
