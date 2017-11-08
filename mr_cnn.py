@@ -4,9 +4,11 @@
 """
 CNN for Sentence Classification: https://arxiv.org/pdf/1408.5882.pdf
 
-To use this, run `python mr_cnn.py`
+To use this, run `python ag_cnn.py`
 
 The best result could reach 76%.
+
+Download the dataset at: https://github.com/mhjabreel/CharCNN/tree/master/data/ag_news_csv
 
 """
 
@@ -173,7 +175,6 @@ def train():
     total_batch = 0
     total_loss = 0.0
     best_acc_val = 0.0
-    flag = False  # if True, stop training
     for epoch in range(config.num_epochs):
         print('Epoch:', epoch + 1)
         train_loader = DataLoader(train_data, batch_size=config.batch_size)
