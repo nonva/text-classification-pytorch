@@ -25,7 +25,7 @@ from sklearn import metrics
 from torch.autograd import Variable
 from torch.utils.data import DataLoader, TensorDataset
 
-from data.mr_loader import Corpus
+from data_helper.mr_loader import Corpus
 
 use_cuda = torch.cuda.is_available()  # if True, use GPU
 
