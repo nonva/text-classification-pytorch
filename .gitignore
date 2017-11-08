@@ -5,6 +5,7 @@ __pycache__/
 
 .DS_Store
 data/cnews
+data/ag_news_csv
 .idea/
 
 # Distribution / packaging

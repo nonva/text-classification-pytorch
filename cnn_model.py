@@ -39,15 +39,19 @@ class TextCNN(nn.Module):
         self.dropout_p = config.dropout_prob
 
         self.embedding = nn.Embedding(config.vocab_size, config.embedding_dim)  # embedding layer
-        self.conv = nn.Conv1d(config.embedding_dim, config.num_filters, config.kernel_size)  # conv1d layer
+        self.conv1 = nn.Conv1d(config.embedding_dim, config.num_filters, config.kernel_size)  # conv1d layer
+        self.conv2 = nn.Conv1d(config.num_filters, 128, 5)
 
-        self.fc1 = nn.Linear(config.num_filters, config.hidden_dim)   # fully connected layer
+        self.fc1 = nn.Linear(128, config.hidden_dim)   # fully connected layer
         self.fc2 = nn.Linear(config.hidden_dim, config.num_classes)   # classification layer
 
     def forward(self, inputs):
         embedded = self.embedding(inputs).permute(0, 2, 1)    # conv1d takes in (batch, channels, seq_len)
 
-        conv1d = self.conv(embedded).permute(0, 2, 1)         # permute bach to (batch, seq_len, channels)
+        conv1d = self.conv1(embedded)         # permute bach to (batch, seq_len, channels)
+        # print(conv1d.size())
+        conv1d = self.conv2(conv1d).permute(0, 2, 1)
+        # print(conv1d.size())
         gmp_1d = conv1d.max(1)[0]                             # global max pooling
 
         x = F.dropout(self.fc1(gmp_1d), p=self.dropout_p)     # dropout, disabled when evaluating
