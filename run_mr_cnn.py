@@ -14,7 +14,6 @@ from sklearn import metrics
 from torch.autograd import Variable
 from torch.utils.data import DataLoader, TensorDataset
 
-from cnn_model import TextCNN
 from data.mr_loader import Corpus
 
 use_cuda = torch.cuda.is_available()  # if True, use GPU
@@ -32,23 +31,61 @@ class TCNNConfig(object):
     """
     CNN Parameters
     """
-    embedding_dim = 64  # embedding vector size
+    embedding_dim = 128  # embedding vector size
     seq_length = 50  # maximum length of sequence
     vocab_size = 8000  # most common words
 
-    num_filters = 256  # number of convolution filters
-    kernel_size = 5  # kernel size
+    num_filters = 128     # number of the convolution filters
 
     hidden_dim = 128  # hidden size of fully connected layer
 
     dropout_prob = 0.2  # how much probability to be dropped
     learning_rate = 1e-3  # learning rate
-    batch_size = 32  # batch size for training
-    num_epochs = 10  # total number of epochs
+    batch_size = 64  # batch size for training
+    num_epochs = 20  # total number of epochs
 
     print_per_batch = 100  # print out the intermediate status every n batches
 
     num_classes = 2  # number of classes
+
+
+class TextCNN(nn.Module):
+    """
+    CNN model for text classification.
+    """
+    def __init__(self, config):
+        super(TextCNN, self).__init__()
+
+        E = config.embedding_dim
+        V = config.vocab_size
+        Nf = config.num_filters
+        C = config.num_classes
+        drop = config.dropout_prob
+
+        self.embedding = nn.Embedding(V, E)  # embedding layer
+
+        self.conv13 = nn.Conv1d(E, Nf, 3)  # conv1d layer
+        self.conv14 = nn.Conv1d(E, Nf, 4)
+        self.conv15 = nn.Conv1d(E, Nf, 5)
+
+        self.fc1 = nn.Linear(3 * Nf, C)   # fully connected layer
+        self.dropout = nn.Dropout(drop)
+
+    def conv_and_max_pool(self, x, conv):
+        return F.relu(conv(x).permute(0, 2, 1).max(1)[0])
+
+    def forward(self, inputs):
+        embedded = self.embedding(inputs).permute(0, 2, 1)    # conv1d takes in (batch, channels, seq_len)
+
+        # convolution and global max pooling
+        x1 = self.conv_and_max_pool(embedded, self.conv13)
+        x2 = self.conv_and_max_pool(embedded, self.conv14)
+        x3 = self.conv_and_max_pool(embedded, self.conv15)
+
+        x = torch.cat((x1, x2, x3), 1)  # concatenation
+        x = self.dropout(x) # dropout, disabled when evaluating
+        x = self.fc1(x)                               # last fully connected layer
+        return x
 
 
 def get_time_dif(start_time):
@@ -120,8 +157,6 @@ def train():
     total_batch = 0
     total_loss = 0.0
     best_acc_val = 0.0
-    last_improved = 0
-    require_improvement = 10000
     flag = False  # if True, stop training
     for epoch in range(config.num_epochs):
         print('Epoch:', epoch + 1)
@@ -150,7 +185,6 @@ def train():
                 if acc_val > best_acc_val:
                     # store the best validation result
                     best_acc_val = acc_val
-                    last_improved = total_batch
                     improved_str = '*'
                     torch.save(model.state_dict(), model_file)
                 else:
@@ -165,21 +199,13 @@ def train():
             loss.backward()
             optimizer.step()
 
-            if total_batch - last_improved > require_improvement:
-                # early stopping
-                print('No optimization for a long time, auto-stopping...')
-                flag = True
-                break
-        if flag:
-            # early stopping
-            break
-
     test(model, val_data)
 
 
 def test(model, test_data):
     """
     Test the model on test dataset.
+    Note: do not run it seperately, unless you seperate the training and test data before training.
     """
     start_time = time.time()
     model.load_state_dict(torch.load(model_file))
