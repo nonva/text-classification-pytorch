@@ -24,7 +24,7 @@ class TRNNConfig(object):
     batch_size = 128  # batch size for training
     num_epochs = 10  # total number of epochs
 
-    print_per_batch = 10  # print out the intermediate status every n batches
+    print_per_batch = 100  # print out the intermediate status every n batches
 
     num_classes = 10  # number of classes
 
