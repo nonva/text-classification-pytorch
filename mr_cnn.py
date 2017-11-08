@@ -52,7 +52,7 @@ class TCNNConfig(object):
 
     hidden_dim = 128  # hidden size of fully connected layer
 
-    dropout_prob = 0.2  # how much probability to be dropped
+    dropout_prob = 0.5  # how much probability to be dropped
     learning_rate = 1e-3  # learning rate
     batch_size = 64  # batch size for training
     num_epochs = 20  # total number of epochs
