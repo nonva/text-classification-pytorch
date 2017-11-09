@@ -13,7 +13,7 @@ def open_file(filename, mode='r'):
     :param mode: 'r' and 'w' for read and write respectively
     """
     return open(filename, mode, encoding='utf-8', errors='ignore')
-    
+
 
 def clean_str(string):
     """
