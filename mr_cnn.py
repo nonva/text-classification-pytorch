@@ -2,14 +2,16 @@
 # -*- coding: utf-8 -*-
 
 """
-CNN for Sentence Classification: https://arxiv.org/pdf/1408.5882.pdf
+This example demonstrates the use of Conv1d for CNN text classification.
+Original paper could be found at: https://arxiv.org/abs/1408.5882
 
-To use this, run `python ag_cnn.py`
+This is the baseline model: CNN-rand.
 
-The best result could reach 76%.
+We didn't implement cross validation,
+but simply run `python mr_cnn.py` for multiple times,
+the average accuracy is close to 76%.
 
-Download the dataset at: https://github.com/mhjabreel/CharCNN/tree/master/data/ag_news_csv
-
+It tooks about 2 minutes for training 20 epochs on a GTX 970 GPU.
 """
 
 __author__ = 'gaussic'
@@ -19,17 +21,18 @@ import time
 from datetime import timedelta
 
 import numpy as np
+from sklearn import metrics
+
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
 import torch.optim as optim
-from sklearn import metrics
 from torch.autograd import Variable
 from torch.utils.data import DataLoader, TensorDataset
 
 from data_helper.mr_loader import Corpus
 
-use_cuda = torch.cuda.is_available()  # if True, use GPU
+use_cuda = torch.cuda.is_available()
 
 pos_file = 'data/mr/rt-polarity.pos.txt'
 neg_file = 'data/mr/rt-polarity.neg.txt'
@@ -37,7 +40,7 @@ neg_file = 'data/mr/rt-polarity.neg.txt'
 save_path = 'models'  # model save path
 if not os.path.exists(save_path):
     os.mkdir(save_path)
-model_file = os.path.join(save_path, 'cnn_mr.pt')
+model_file = os.path.join(save_path, 'mr_cnn.pt')
 
 
 class TCNNConfig(object):
@@ -48,18 +51,21 @@ class TCNNConfig(object):
     seq_length = 50  # maximum length of sequence
     vocab_size = 8000  # most common words
 
-    num_filters = 128  # number of the convolution filters
+    num_filters = 100  # number of the convolution filters (feature maps)
+    kernel_sizes = [3, 4, 5]   # three kind of kernels (windows)
 
     hidden_dim = 128  # hidden size of fully connected layer
 
     dropout_prob = 0.5  # how much probability to be dropped
     learning_rate = 1e-3  # learning rate
-    batch_size = 64  # batch size for training
+    batch_size = 50  # batch size for training
     num_epochs = 20  # total number of epochs
 
     print_per_batch = 100  # print out the intermediate status every n batches
 
     num_classes = 2  # number of classes
+
+    dev_split = 0.1  # percentage of dev data
 
 
 class TextCNN(nn.Module):
@@ -70,19 +76,17 @@ class TextCNN(nn.Module):
     def __init__(self, config):
         super(TextCNN, self).__init__()
 
-        E = config.embedding_dim
         V = config.vocab_size
+        E = config.embedding_dim
         Nf = config.num_filters
+        Ks = config.kernel_sizes
         C = config.num_classes
         drop = config.dropout_prob
 
         self.embedding = nn.Embedding(V, E)  # embedding layer
 
         # three convolution layers
-        self.conv13 = nn.Conv1d(E, Nf, 3)
-        self.conv14 = nn.Conv1d(E, Nf, 4)
-        self.conv15 = nn.Conv1d(E, Nf, 5)
-
+        self.convs = nn.ModuleList([nn.Conv1d(E, Nf, k) for k in Ks])
         self.fc1 = nn.Linear(3 * Nf, C)  # fully connected layer
         self.dropout = nn.Dropout(drop)
 
@@ -96,11 +100,9 @@ class TextCNN(nn.Module):
         embedded = self.embedding(inputs).permute(0, 2, 1)
 
         # convolution and global max pooling
-        x1 = self.conv_and_max_pool(embedded, self.conv13)
-        x2 = self.conv_and_max_pool(embedded, self.conv14)
-        x3 = self.conv_and_max_pool(embedded, self.conv15)
+        x = [self.conv_and_max_pool(embedded, k) for k in self.convs]
+        x = torch.cat((x), 1)  # concatenation
 
-        x = torch.cat((x1, x2, x3), 1)  # concatenation
         x = self.dropout(x)  # dropout, disabled when evaluating
         x = self.fc1(x)  # last fully connected layer
         return x
@@ -151,7 +153,7 @@ def train():
     print('Loading data...')
     start_time = time.time()
     config = TCNNConfig()
-    corpus = Corpus(pos_file, neg_file, 0.1, config.seq_length, config.vocab_size)
+    corpus = Corpus(pos_file, neg_file, config.dev_split, config.seq_length, config.vocab_size)
     print(corpus)
     config.vocab_size = len(corpus.words)
 
@@ -177,6 +179,7 @@ def train():
     best_acc_val = 0.0
     for epoch in range(config.num_epochs):
         print('Epoch:', epoch + 1)
+        # load the training data in batch
         train_loader = DataLoader(train_data, batch_size=config.batch_size)
         for x_batch, y_batch in train_loader:
             inputs, targets = Variable(x_batch), Variable(y_batch)
@@ -224,7 +227,7 @@ def test(model, test_data):
     Test the model on test dataset.
     """
     start_time = time.time()
-    model.load_state_dict(torch.load(model_file))
+    model.load_state_dict(torch.load(model_file))  # restore the parameters
 
     print("Testing...")
     loss_test, acc_test, total_pred = evaluate(model, test_data)

@@ -6,6 +6,15 @@ import numpy as np
 import re
 
 
+def open_file(filename, mode='r'):
+    """
+    Commonly used file reader and writer, change this to switch between python2 and python3.
+    :param filename: filename
+    :param mode: 'r' and 'w' for read and write respectively
+    """
+    return open(filename, mode, encoding='utf-8', errors='ignore')
+    
+
 def clean_str(string):
     """
     Tokenization/string cleaning for all datasets except for SST.
@@ -27,20 +36,11 @@ def clean_str(string):
     return string.strip().lower()
 
 
-def open_file(filename, mode='r'):
-    """
-    Commonly used file reader and writer, change this to switch between python2 and python3.
-    :param filename: filename
-    :param mode: 'r' and 'w' for read and write respectively
-    """
-    return open(filename, mode, encoding='utf-8', errors='ignore')
-
-
 class Corpus(object):
     def __init__(self, pos_file, neg_file, dev_split=0.1, max_length=50, vocab_size=5000):
         # loading data
-        pos_examples = [clean_str(s.strip()).split() for s in open_file(pos_file).readlines()]
-        neg_examples = [clean_str(s.strip()).split() for s in open_file(neg_file).readlines()]
+        pos_examples = [clean_str(s.strip()).split() for s in open_file(pos_file)]
+        neg_examples = [clean_str(s.strip()).split() for s in open_file(neg_file)]
         x_data = pos_examples + neg_examples
         y_data = [0] * len(pos_examples) + [1] * len(neg_examples)
 
@@ -56,7 +56,7 @@ class Corpus(object):
         self.words = ['<PAD>'] + list(words)  # add a padding with id 0 to pad the sentence to same length
         self.word_to_id = dict(zip(words, range(len(words))))
 
-        for i in range(len(x_data)):  # tokenizing
+        for i in range(len(x_data)):  # tokenizing and padding
             content = [self.word_to_id[x] for x in x_data[i] if x in self.word_to_id]
             if len(content) < max_length:
                 content = [0] * (max_length - len(content)) + content
@@ -69,7 +69,7 @@ class Corpus(object):
         x_data = x_data[indices]
         y_data = y_data[indices]
 
-        num_train = int((1 - dev_split) * len(x_data))
+        num_train = int((1 - dev_split) * len(x_data)) # train/dev split
         self.x_train = x_data[:num_train]
         self.y_train = y_data[:num_train]
         self.x_test = x_data[num_train:]
