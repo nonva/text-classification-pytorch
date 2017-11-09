@@ -1,14 +1,15 @@
 # text-classification-pytorch
-cnn and rnn for chinese text classification using pytorch
 
-## Movie Review dataset
+This example demonstrates the use of Conv1d for CNN text classification.
+Original paper could be found at: https://arxiv.org/abs/1408.5882
 
-### CNN
+This is the baseline model: CNN-rand, on MR dataset.
 
-This is roughly the same model as [CNN for text classification](https://arxiv.org/pdf/1408.5882.pdf).
+We didn't implement cross validation,
+but simply run `python mr_cnn.py` for multiple times,
+the average accuracy is close to 76%.
 
-Run `python mr_cnn.py` for multiple times, the average accuracy is about 75%, very close to the original paper.
-
+It tooks about 2 minutes for training 20 epochs on a GTX 970 GPU.
 Result:
 
 ```
