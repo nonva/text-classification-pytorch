@@ -30,12 +30,14 @@ import torch.optim as optim
 from torch.autograd import Variable
 from torch.utils.data import DataLoader, TensorDataset
 
-from data_helper.mr_loader import Corpus
+from data_helper.mr_loader import Corpus, read_vocab, process_text
 
 use_cuda = torch.cuda.is_available()
 
-pos_file = 'data/mr/rt-polarity.pos.txt'
-neg_file = 'data/mr/rt-polarity.neg.txt'
+base_dir = 'data/mr'
+pos_file = os.path.join(base_dir, 'rt-polarity.pos.txt')
+neg_file = os.path.join(base_dir, 'rt-polarity.neg.txt')
+vocab_file = os.path.join(base_dir, 'rt-polarity.vocab.txt')
 
 save_path = 'models'  # model save path
 if not os.path.exists(save_path):
@@ -129,7 +131,7 @@ def evaluate(model, data):
     total_acc = 0.0
     total_pred = []
     for x_batch, y_batch in data_loader:
-        inputs, targets = Variable(x_batch), Variable(y_batch)
+        inputs, targets = Variable(x_batch, volatile=True), Variable(y_batch, volatile=True)
         if use_cuda:
             inputs, targets = inputs.cuda(), targets.cuda()
 
@@ -153,7 +155,7 @@ def train():
     print('Loading data...')
     start_time = time.time()
     config = TCNNConfig()
-    corpus = Corpus(pos_file, neg_file, config.dev_split, config.seq_length, config.vocab_size)
+    corpus = Corpus(pos_file, neg_file, vocab_file, config.dev_split, config.seq_length, config.vocab_size)
     print(corpus)
     config.vocab_size = len(corpus.words)
 
@@ -243,5 +245,33 @@ def test(model, test_data):
     print("Time usage:", get_time_dif(start_time))
 
 
+def predict(text):
+    # load config and vocabulary
+    config = TCNNConfig()
+    _, word_to_id = read_vocab(vocab_file)
+    labels = ['POS', 'NEG']
+
+    # load model
+    model = TextCNN(config)
+    model.load_state_dict(torch.load(model_file))
+    if use_cuda:
+        model.cuda()
+
+    # process text
+    text = process_text(text, word_to_id, config.seq_length)
+    text = Variable(torch.LongTensor([text]), volatile=True)
+    if use_cuda:
+        text = text.cuda()
+
+    # predict
+    model.eval()   # very important
+    output = model(text)
+    _, pred = torch.max(output, 1)
+
+    return labels[pred.data[0]]
+
+
 if __name__ == '__main__':
-    train()
+    # train()
+    print(predict('this film is good'))
+    print(predict('this film is bad'))

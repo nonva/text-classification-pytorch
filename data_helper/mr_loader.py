@@ -4,7 +4,7 @@
 from collections import Counter
 import numpy as np
 import re
-
+import os
 
 def open_file(filename, mode='r'):
     """
@@ -36,31 +36,58 @@ def clean_str(string):
     return string.strip().lower()
 
 
+def build_vocab(data, vocab_dir, vocab_size=50000):
+    """
+    Build vocabulary file from training data.
+    """
+    print('Building vocabulary...')
+
+    all_data = []  # group all data
+    for content in data:
+        all_data.extend(content)
+
+    counter = Counter(all_data)  # count and get the most common words
+    count_pairs = counter.most_common(vocab_size - 1)
+    words, _ = list(zip(*count_pairs))
+
+    words = ['<PAD>'] + list(words)  # add a padding with id 0 to pad the sentence to same length
+    open_file(vocab_dir, 'w').write('\n'.join(words) + '\n')
+
+
+def read_vocab(vocab_file):
+    """
+    Read vocabulary from file.
+    """
+    words = open_file(vocab_file).read().strip().split('\n')
+    word_to_id = dict(zip(words, range(len(words))))
+    return words, word_to_id
+
+def process_text(text, word_to_id, max_length):
+    """tokenizing and padding"""
+    text = clean_str(text).split()
+    text = [word_to_id[x] for x in text if x in word_to_id]
+    if len(text) < max_length:
+        text = [0] * (max_length - len(text)) + text
+    return text[:max_length]
+
 class Corpus(object):
-    def __init__(self, pos_file, neg_file, dev_split=0.1, max_length=50, vocab_size=5000):
+    """
+    Preprocessing training data.
+    """
+    def __init__(self, pos_file, neg_file, vocab_file, dev_split=0.1, max_length=50, vocab_size=5000):
         # loading data
-        pos_examples = [clean_str(s.strip()).split() for s in open_file(pos_file)]
-        neg_examples = [clean_str(s.strip()).split() for s in open_file(neg_file)]
+        pos_examples = [clean_str(s.strip()) for s in open_file(pos_file)]
+        neg_examples = [clean_str(s.strip()) for s in open_file(neg_file)]
         x_data = pos_examples + neg_examples
         y_data = [0] * len(pos_examples) + [1] * len(neg_examples)
 
-        # vocabulary
-        all_data = []  # group all data
-        for content in x_data:
-            all_data.extend(content)
+        if not os.path.exists(vocab_file):
+            build_vocab(x_data, vocab_file, vocab_size)
 
-        counter = Counter(all_data)  # count and get the most common words
-        count_pairs = counter.most_common(vocab_size - 1)
-        words, _ = list(zip(*count_pairs))
-
-        self.words = ['<PAD>'] + list(words)  # add a padding with id 0 to pad the sentence to same length
-        self.word_to_id = dict(zip(words, range(len(words))))
+        self.words, self.word_to_id = read_vocab(vocab_file)
 
         for i in range(len(x_data)):  # tokenizing and padding
-            content = [self.word_to_id[x] for x in x_data[i] if x in self.word_to_id]
-            if len(content) < max_length:
-                content = [0] * (max_length - len(content)) + content
-            x_data[i] = content[:max_length]
+            x_data[i] = process_text(x_data[i], self.word_to_id, max_length)
 
         x_data = np.array(x_data)
         y_data = np.array(y_data)

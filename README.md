@@ -26,75 +26,75 @@ TextCNN (
   (dropout): Dropout (p = 0.5)
 )
 Epoch: 1
-Iter:    100, Train Loss:   0.76, Train Acc:  60.00%, Val Loss:   0.67, Val Acc:  57.83%, Time: 0:00:05 *
+Iter:    100, Train Loss:   0.74, Train Acc:  60.00%, Val Loss:   0.65, Val Acc:  62.32%, Time: 0:00:06 *
 Epoch: 2
-Iter:    200, Train Loss:   0.69, Train Acc:  66.00%, Val Loss:   0.65, Val Acc:  61.01%, Time: 0:00:08 *
-Iter:    300, Train Loss:   0.61, Train Acc:  60.00%, Val Loss:   0.65, Val Acc:  60.07%, Time: 0:00:11
+Iter:    200, Train Loss:   0.68, Train Acc:  76.00%, Val Loss:   0.63, Val Acc:  65.98%, Time: 0:00:08 *
+Iter:    300, Train Loss:   0.59, Train Acc:  66.00%, Val Loss:   0.62, Val Acc:  66.07%, Time: 0:00:11 *
 Epoch: 3
-Iter:    400, Train Loss:   0.59, Train Acc:  60.00%, Val Loss:   0.63, Val Acc:  62.23%, Time: 0:00:13 *
-Iter:    500, Train Loss:   0.52, Train Acc:  76.00%, Val Loss:   0.62, Val Acc:  66.17%, Time: 0:00:16 *
+Iter:    400, Train Loss:   0.58, Train Acc:  86.00%, Val Loss:   0.59, Val Acc:  67.48%, Time: 0:00:13 *
+Iter:    500, Train Loss:   0.51, Train Acc:  82.00%, Val Loss:   0.59, Val Acc:  68.42%, Time: 0:00:16 *
 Epoch: 4
-Iter:    600, Train Loss:   0.49, Train Acc:  82.00%, Val Loss:   0.59, Val Acc:  69.45%, Time: 0:00:19 *
-Iter:    700, Train Loss:   0.43, Train Acc:  78.00%, Val Loss:   0.58, Val Acc:  71.04%, Time: 0:00:21 *
+Iter:    600, Train Loss:   0.48, Train Acc:  74.00%, Val Loss:   0.56, Val Acc:  70.76%, Time: 0:00:19 *
+Iter:    700, Train Loss:   0.42, Train Acc:  78.00%, Val Loss:   0.57, Val Acc:  70.67%, Time: 0:00:21
 Epoch: 5
-Iter:    800, Train Loss:    0.4, Train Acc:  80.00%, Val Loss:    0.6, Val Acc:  70.57%, Time: 0:00:24
-Iter:    900, Train Loss:   0.32, Train Acc:  84.00%, Val Loss:    0.6, Val Acc:  71.60%, Time: 0:00:26 *
+Iter:    800, Train Loss:    0.4, Train Acc:  76.00%, Val Loss:   0.58, Val Acc:  70.20%, Time: 0:00:24
+Iter:    900, Train Loss:   0.34, Train Acc:  84.00%, Val Loss:    0.6, Val Acc:  72.35%, Time: 0:00:27 *
 Epoch: 6
-Iter:   1000, Train Loss:    0.3, Train Acc:  82.00%, Val Loss:   0.64, Val Acc:  70.67%, Time: 0:00:29
-Iter:   1100, Train Loss:   0.26, Train Acc:  94.00%, Val Loss:   0.62, Val Acc:  72.16%, Time: 0:00:32 *
+Iter:   1000, Train Loss:   0.31, Train Acc:  82.00%, Val Loss:   0.62, Val Acc:  71.98%, Time: 0:00:29
+Iter:   1100, Train Loss:   0.26, Train Acc: 100.00%, Val Loss:   0.61, Val Acc:  72.91%, Time: 0:00:32 *
 Epoch: 7
-Iter:   1200, Train Loss:   0.23, Train Acc:  90.00%, Val Loss:   0.66, Val Acc:  72.63%, Time: 0:00:34 *
-Iter:   1300, Train Loss:    0.2, Train Acc:  96.00%, Val Loss:   0.71, Val Acc:  70.67%, Time: 0:00:37
+Iter:   1200, Train Loss:   0.24, Train Acc:  94.00%, Val Loss:    0.6, Val Acc:  74.79%, Time: 0:00:34 *
+Iter:   1300, Train Loss:   0.22, Train Acc:  96.00%, Val Loss:   0.71, Val Acc:  71.04%, Time: 0:00:37
 Epoch: 8
-Iter:   1400, Train Loss:   0.18, Train Acc:  94.00%, Val Loss:    0.7, Val Acc:  73.57%, Time: 0:00:40 *
-Iter:   1500, Train Loss:   0.14, Train Acc:  84.00%, Val Loss:   0.78, Val Acc:  70.57%, Time: 0:00:42
+Iter:   1400, Train Loss:   0.18, Train Acc:  98.00%, Val Loss:   0.65, Val Acc:  74.04%, Time: 0:00:40
+Iter:   1500, Train Loss:   0.15, Train Acc:  96.00%, Val Loss:   0.68, Val Acc:  74.32%, Time: 0:00:42
 Epoch: 9
-Iter:   1600, Train Loss:   0.15, Train Acc:  96.00%, Val Loss:   0.74, Val Acc:  72.91%, Time: 0:00:45
-Iter:   1700, Train Loss:   0.13, Train Acc:  94.00%, Val Loss:   0.85, Val Acc:  73.57%, Time: 0:00:48
+Iter:   1600, Train Loss:   0.17, Train Acc:  94.00%, Val Loss:   0.69, Val Acc:  73.76%, Time: 0:00:45
+Iter:   1700, Train Loss:   0.13, Train Acc:  98.00%, Val Loss:   0.72, Val Acc:  74.23%, Time: 0:00:48
 Epoch: 10
-Iter:   1800, Train Loss:   0.13, Train Acc:  98.00%, Val Loss:   0.81, Val Acc:  73.01%, Time: 0:00:50
-Iter:   1900, Train Loss:  0.095, Train Acc:  94.00%, Val Loss:    1.0, Val Acc:  71.98%, Time: 0:00:53
+Iter:   1800, Train Loss:   0.11, Train Acc: 100.00%, Val Loss:   0.76, Val Acc:  74.51%, Time: 0:00:50
+Iter:   1900, Train Loss:    0.1, Train Acc:  94.00%, Val Loss:   0.78, Val Acc:  74.51%, Time: 0:00:53
 Epoch: 11
-Iter:   2000, Train Loss:  0.097, Train Acc:  98.00%, Val Loss:   0.84, Val Acc:  73.48%, Time: 0:00:56
-Iter:   2100, Train Loss:  0.078, Train Acc:  98.00%, Val Loss:   0.86, Val Acc:  74.04%, Time: 0:00:58 *
+Iter:   2000, Train Loss:  0.089, Train Acc: 100.00%, Val Loss:   0.81, Val Acc:  74.51%, Time: 0:00:55
+Iter:   2100, Train Loss:  0.084, Train Acc:  96.00%, Val Loss:   0.85, Val Acc:  74.04%, Time: 0:00:58
 Epoch: 12
-Iter:   2200, Train Loss:  0.074, Train Acc:  94.00%, Val Loss:   0.91, Val Acc:  73.66%, Time: 0:01:01
-Iter:   2300, Train Loss:  0.073, Train Acc: 100.00%, Val Loss:   0.98, Val Acc:  71.51%, Time: 0:01:04
+Iter:   2200, Train Loss:  0.074, Train Acc:  98.00%, Val Loss:   0.87, Val Acc:  74.23%, Time: 0:01:01
+Iter:   2300, Train Loss:  0.068, Train Acc:  96.00%, Val Loss:    0.9, Val Acc:  74.32%, Time: 0:01:03
 Epoch: 13
-Iter:   2400, Train Loss:  0.063, Train Acc:  98.00%, Val Loss:   0.96, Val Acc:  74.51%, Time: 0:01:06 *
+Iter:   2400, Train Loss:  0.063, Train Acc:  98.00%, Val Loss:   0.96, Val Acc:  73.10%, Time: 0:01:06
 Epoch: 14
-Iter:   2500, Train Loss:  0.058, Train Acc:  90.00%, Val Loss:    1.0, Val Acc:  72.35%, Time: 0:01:09
-Iter:   2600, Train Loss:  0.049, Train Acc:  98.00%, Val Loss:    1.0, Val Acc:  74.79%, Time: 0:01:12 *
+Iter:   2500, Train Loss:  0.059, Train Acc:  98.00%, Val Loss:    1.0, Val Acc:  73.38%, Time: 0:01:09
+Iter:   2600, Train Loss:  0.057, Train Acc: 100.00%, Val Loss:   0.97, Val Acc:  74.88%, Time: 0:01:11 *
 Epoch: 15
-Iter:   2700, Train Loss:   0.04, Train Acc:  98.00%, Val Loss:    1.0, Val Acc:  73.66%, Time: 0:01:14
-Iter:   2800, Train Loss:  0.042, Train Acc:  98.00%, Val Loss:    1.1, Val Acc:  74.13%, Time: 0:01:17
+Iter:   2700, Train Loss:  0.046, Train Acc: 100.00%, Val Loss:    1.0, Val Acc:  74.51%, Time: 0:01:14
+Iter:   2800, Train Loss:  0.046, Train Acc:  98.00%, Val Loss:    1.1, Val Acc:  74.04%, Time: 0:01:17
 Epoch: 16
-Iter:   2900, Train Loss:  0.039, Train Acc: 100.00%, Val Loss:    1.2, Val Acc:  73.20%, Time: 0:01:20
-Iter:   3000, Train Loss:  0.042, Train Acc: 100.00%, Val Loss:    1.1, Val Acc:  74.70%, Time: 0:01:22
+Iter:   2900, Train Loss:   0.04, Train Acc: 100.00%, Val Loss:    1.1, Val Acc:  73.76%, Time: 0:01:19
+Iter:   3000, Train Loss:  0.045, Train Acc:  98.00%, Val Loss:    1.1, Val Acc:  73.29%, Time: 0:01:22
 Epoch: 17
-Iter:   3100, Train Loss:  0.032, Train Acc:  98.00%, Val Loss:    1.2, Val Acc:  75.35%, Time: 0:01:25 *
-Iter:   3200, Train Loss:  0.037, Train Acc:  98.00%, Val Loss:    1.2, Val Acc:  74.13%, Time: 0:01:27
+Iter:   3100, Train Loss:  0.041, Train Acc: 100.00%, Val Loss:    1.1, Val Acc:  74.51%, Time: 0:01:24
+Iter:   3200, Train Loss:  0.031, Train Acc: 100.00%, Val Loss:    1.1, Val Acc:  74.88%, Time: 0:01:27
 Epoch: 18
-Iter:   3300, Train Loss:  0.034, Train Acc:  96.00%, Val Loss:    1.2, Val Acc:  74.98%, Time: 0:01:30
-Iter:   3400, Train Loss:  0.034, Train Acc: 100.00%, Val Loss:    1.2, Val Acc:  75.26%, Time: 0:01:33
+Iter:   3300, Train Loss:  0.037, Train Acc: 100.00%, Val Loss:    1.1, Val Acc:  75.63%, Time: 0:01:30 *
+Iter:   3400, Train Loss:  0.028, Train Acc: 100.00%, Val Loss:    1.1, Val Acc:  75.73%, Time: 0:01:32 *
 Epoch: 19
-Iter:   3500, Train Loss:  0.035, Train Acc: 100.00%, Val Loss:    1.2, Val Acc:  74.79%, Time: 0:01:36
-Iter:   3600, Train Loss:  0.041, Train Acc: 100.00%, Val Loss:    1.3, Val Acc:  74.60%, Time: 0:01:38
+Iter:   3500, Train Loss:  0.031, Train Acc: 100.00%, Val Loss:    1.2, Val Acc:  74.70%, Time: 0:01:35
+Iter:   3600, Train Loss:  0.021, Train Acc:  98.00%, Val Loss:    1.2, Val Acc:  75.63%, Time: 0:01:38
 Epoch: 20
-Iter:   3700, Train Loss:  0.035, Train Acc:  98.00%, Val Loss:    1.3, Val Acc:  75.26%, Time: 0:01:41
-Iter:   3800, Train Loss:  0.033, Train Acc:  96.00%, Val Loss:    1.4, Val Acc:  74.88%, Time: 0:01:43
+Iter:   3700, Train Loss:  0.024, Train Acc: 100.00%, Val Loss:    1.2, Val Acc:  76.19%, Time: 0:01:40 *
+Iter:   3800, Train Loss:  0.027, Train Acc:  98.00%, Val Loss:    1.2, Val Acc:  75.35%, Time: 0:01:43
 Testing...
-Test Loss:    1.2, Test Acc:  75.35%
+Test Loss:    1.2, Test Acc:  76.19%
 Precision, Recall and F1-Score...
              precision    recall  f1-score   support
 
-        POS       0.73      0.79      0.76       527
-        NEG       0.78      0.72      0.75       540
+        POS       0.76      0.77      0.77       540
+        NEG       0.76      0.76      0.76       527
 
-avg / total       0.76      0.75      0.75      1067
+avg / total       0.76      0.76      0.76      1067
 
 Confusion Matrix...
-[[416 111]
- [152 388]]
+[[415 125]
+ [129 398]]
 Time usage: 0:00:00
 ```
