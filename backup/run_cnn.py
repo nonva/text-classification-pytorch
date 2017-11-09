@@ -1,18 +1,19 @@
-import torch
-import torch.nn as nn
-import torch.optim as optim
-import torch.nn.functional as F
-from torch.utils.data import DataLoader
-from torch.autograd import Variable
-from cnn_model import TCNNConfig, TextCNN
-from data.data_loader import Dictionary, TextDataset, build_vocab
-import numpy as np
-from sklearn import metrics
-
-import time
-from datetime import timedelta
 import os
 import sys
+import time
+from datetime import timedelta
+
+import numpy as np
+import torch
+import torch.nn as nn
+import torch.nn.functional as F
+import torch.optim as optim
+from sklearn import metrics
+from torch.autograd import Variable
+from torch.utils.data import DataLoader
+
+from backup.cnn_model import TCNNConfig, TextCNN
+from backup.data_loader import Dictionary, TextDataset, build_vocab
 
 use_cuda = torch.cuda.is_available()  # if True, use GPU
 

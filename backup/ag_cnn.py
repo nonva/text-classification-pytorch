@@ -27,7 +27,7 @@ from sklearn import metrics
 from torch.autograd import Variable
 from torch.utils.data import DataLoader, TensorDataset
 
-from data_helper.ag_loader import Dictionary, Corpus, build_vocab
+from backup.ag_loader import Dictionary, Corpus, build_vocab
 
 base_dir = 'data/ag_news_csv'
 train_dir = os.path.join(base_dir, 'train.csv')
