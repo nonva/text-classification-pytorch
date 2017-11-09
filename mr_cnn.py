@@ -253,9 +253,9 @@ def predict(text):
 
     # load model
     model = TextCNN(config)
-    model.load_state_dict(torch.load(model_file))
-    if use_cuda:
-        model.cuda()
+    model.load_state_dict(torch.load(model_file, map_location=lambda storage, loc: storage))
+    # if use_cuda:
+    #     model.cuda()
 
     # process text
     text = process_text(text, word_to_id, config.seq_length)
