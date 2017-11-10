@@ -44,7 +44,7 @@ def build_vocab(data, vocab_dir, vocab_size=50000):
 
     all_data = []  # group all data
     for content in data:
-        all_data.extend(content)
+        all_data.extend(content.split())
 
     counter = Counter(all_data)  # count and get the most common words
     count_pairs = counter.most_common(vocab_size - 1)

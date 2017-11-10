@@ -273,6 +273,6 @@ def predict(text):
 
 
 if __name__ == '__main__':
-    # train()
+    train()
     print(predict('this film is good'))
     print(predict('this film is bad'))
